@@ -130,7 +130,7 @@ class ExpCalc:
         newExp = ""
         for i in range(0, len(subExp)):
             if subExp[i] == '-':
-                if i == 0 or not subExp[i-1].isdigit():
+                if i == 0 or (subExp[i-1] != ')' and not subExp[i-1].isdigit()):
                     newExp += '~'
                     continue
             newExp += subExp[i]
@@ -139,7 +139,7 @@ class ExpCalc:
 
 
 if __name__ == '__main__':
-    expr = '2root-3'
+    expr = '-8%13'
     result = ExpCalc(expr).calculate()
     res = (-3) ** (1/2)
     print(result, ' ', res)
