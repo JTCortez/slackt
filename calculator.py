@@ -55,7 +55,9 @@ class Window(Frame):
         # last row ('dec', '.', =)
         buildButton(master, '0/4dec', lambda: self.decimal(), 7, 0, 1, 1)
         buildButton(master, '.', lambda: self.notice('.'), 7, 1, 1, 1)
-        buildButton(master, '=', lambda: self.displayRes(), 7, 2, 1, 2)
+        buildButton(master, '=', lambda: self.displayRes(None), 7, 2, 1, 2)
+
+        self.textField.bind('<KeyRelease-Return>', self.displayRes)
 
     # function to notice click on button and display on calc
     def notice(self, symbol):
@@ -97,12 +99,16 @@ class Window(Frame):
         self.notice(r)
 
     # function to display result after '=' is register
-    def displayRes(self):
+    def displayRes(self, event):
         self.res = self.calculate(self.textField.get("0.0", END)[:-1])
         if isinstance(self.res, str):
             messagebox.showerror("Error", self.res)
-        self.textField.delete("0.0", END)
-        self.textField.insert(INSERT, self.res)
+            self.clear()
+        else:
+            self.textField.delete("0.0", END)
+            self.textField.insert(INSERT, self.res)
+            if event is not None:
+                self.textField.see("0.0")
 
     # calculate using ExpCalc class
     def calculate(self, expr):

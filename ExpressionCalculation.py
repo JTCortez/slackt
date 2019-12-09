@@ -8,10 +8,11 @@ class ExpCalc:
 
     # call calculation function which is recursive
     def calculate(self):
-        return self.__calculation(self.exp)
+        return self.calculation(self.exp)
 
     # recursively calculate subexpressions
-    def __calculation(self, subExp):
+    # make public for testing
+    def calculation(self, subExp):
         # abort if error
         if "ERROR" in subExp:
             return subExp
@@ -21,7 +22,7 @@ class ExpCalc:
                 subExp = '-' + subExp[1:]
             return float(subExp)
         except ValueError:  # if try doesn't work, deal with the expression
-            subExp = self.__negval_split(subExp)
+            subExp = self.negval_split(subExp)
             # prioritize dealing with bracket first
             if ')' in subExp or '(' in subExp:
                 level, maxLevelhead, maxLeveltail = 0, 0, 0
@@ -38,48 +39,49 @@ class ExpCalc:
                         maxLeveltail = i
                         break
                 newsubExp = subExp[:maxLevelhead]
-                newsubExp += str(self.__calculation(subExp[maxLevelhead+1:maxLeveltail]))
+                newsubExp += str(self.calculation(subExp[maxLevelhead+1:maxLeveltail]))
                 newsubExp += subExp[maxLeveltail+1:]
-                return self.__calculation(newsubExp)
+                return self.calculation(newsubExp)
             # then +
             elif '+' in subExp:
-                return self.__split_cal(subExp, '+')
+                return self.split_cal(subExp, '+')
             # then -
             elif '-' in subExp:
-                return self.__split_cal(subExp, '-')
+                return self.split_cal(subExp, '-')
             # then *
             elif '*' in subExp:
-                return self.__split_cal(subExp, '*')
+                return self.split_cal(subExp, '*')
             # then /
             elif '/' in subExp:
-                return self.__split_cal(subExp, '/')
+                return self.split_cal(subExp, '/')
             # then %
             elif '%' in subExp:
-                return self.__split_cal(subExp, '%')
+                return self.split_cal(subExp, '%')
             # then ^
             elif '^' in subExp:
-                return self.__split_cal(subExp, '^')
+                return self.split_cal(subExp, '^')
             # then root
             elif 'root' in subExp:
-                return self.__split_cal(subExp, 'root')
+                return self.split_cal(subExp, 'root')
             # then sin
             elif 'sin' in subExp:
-                return self.__split_cal(subExp, 'sin')
+                return self.split_cal(subExp, 'sin')
             # then cos
             elif 'cos' in subExp:
-                return self.__split_cal(subExp, 'cos')
+                return self.split_cal(subExp, 'cos')
             # then tan
             elif 'tan' in subExp:
-                return self.__split_cal(subExp, 'tan')
+                return self.split_cal(subExp, 'tan')
             else:
                 return "ERROR: invalid expression"
 
     # helper function to split and calculate
-    def __split_cal(self, subExp, op):
+    # only made public for testing
+    def split_cal(self, subExp, op):
         subExp_split = subExp.split(op)
-        res = self.__calculation(subExp_split[0])
+        res = self.calculation(subExp_split[0])
         for split in subExp_split[1:]:
-            ret = self.__calculation(split)
+            ret = self.calculation(split)
             if isinstance(ret, str) and 'ERR' in ret:
                 return ret
             if op == '+':
@@ -126,7 +128,8 @@ class ExpCalc:
         return res
 
     # helper to determine if '-' is negative or subtract, then deal with it appropriately
-    def __negval_split(self, subExp):
+    # only made public for testing
+    def negval_split(self, subExp):
         newExp = ""
         for i in range(0, len(subExp)):
             if subExp[i] == '-':
@@ -139,7 +142,6 @@ class ExpCalc:
 
 
 if __name__ == '__main__':
-    expr = '-8%13'
+    expr = '(-1+-2)*3/-9'
     result = ExpCalc(expr).calculate()
-    res = (-3) ** (1/2)
-    print(result, ' ', res)
+    print(result)
